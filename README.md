@@ -1,3 +1,5 @@
 # TASKTRACKER CLI
 
-Projeto criado para trabalhar conceitos de Python.
+O TaskTracker CLI permite você adicionar, deletar e listar suas tarefas.
+
+**projeto em desenvolvimento**
