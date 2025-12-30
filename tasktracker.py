@@ -1,4 +1,5 @@
-tasks = []
+import json
+import os
 
 def add(description):
     task = {
@@ -59,6 +60,22 @@ def list_inprogress():
             print('-' * 35)
 
 
+def save_tasks(tasks):
+    with open('tasks.json', 'w') as file:
+        json.dump(tasks, file, indent=2)
+
+
+def load_tasks():
+    if not os.path.exists('tasks.json'):
+        with open('tasks.json', 'w') as file:
+            json.dump([], file)
+    
+    with open('tasks.json', 'r') as file:
+        return json.load(file)
+
+
+tasks = load_tasks()
+
 add('lavar louça')
 add('cozinhar macarrao')
 add('estudar')
@@ -68,6 +85,7 @@ add('correr')
 mark('done', 4)
 add('corinthians')
 mark('in progress', 5)
-delete(5)
+delete(1)
 
-list_inprogress()
+save_tasks(tasks)
+print(load_tasks())
