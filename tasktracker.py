@@ -1,35 +1,48 @@
 import json
 import os
+import sys
 
 def add(description):
-    task = {
-        'id': len(tasks) + 1, 
-        'description': description, 
-        'status': 'to do'
-    }
-
+    if len(tasks) == 0:
+        task = {
+            'id': 1, 
+            'description': description, 
+            'status': 'to do'
+        }
+    else:
+        task = {
+            'id': tasks[-1]['id'] + 1,
+            'description': description,
+            'status': 'to do'
+        }
     tasks.append(task)
 
 
 def update(id, new_description):
     for t in tasks:
-        if t['id'] == id:
+        if t['id'] == int(id):
             t['description'] = new_description
 
 
 def delete(id):
     for t in tasks:
-        if t['id'] == id:
+        if t['id'] == int(id):
             tasks.remove(t)
 
 
-def mark(status, id):
+def mark_in_progress(id):
     for t in tasks:
-        if t['id'] == id:
-            t['status'] = status
+        if t['id'] == int(id):
+            t['status'] = 'in progress'
 
 
-def list():
+def mark_done(id):
+    for t in tasks:
+        if t['id'] == int(id):
+            t['status'] = 'done'
+
+
+def list_tasks():
     for t in tasks:
         for i in t:
             print(f'{i}: {t[i]}')
@@ -44,7 +57,7 @@ def list_done():
             print('-' * 35)
 
 
-def list_notdone():
+def list_not_done():
     for t in tasks:
         if t['status'] != 'done':
             for i in t:
@@ -52,7 +65,7 @@ def list_notdone():
             print('-' * 35)
 
 
-def list_inprogress():
+def list_in_progress():
     for t in tasks:
         if t['status'] == 'in progress':
             for i in t:
@@ -76,16 +89,46 @@ def load_tasks():
 
 tasks = load_tasks()
 
-add('lavar louça')
-add('cozinhar macarrao')
-add('estudar')
-update(1, 'lavar e secar louça')
-mark('done', 3)
-add('correr')
-mark('done', 4)
-add('corinthians')
-mark('in progress', 5)
-delete(1)
+args = sys.argv
 
-save_tasks(tasks)
-print(load_tasks())
+if len(args) < 2:
+    exit()
+
+command = args[1]
+
+if command == 'add':
+    add(args[2])
+    save_tasks(tasks)
+    print(f'Tarefa adicionada com sucesso (ID: {tasks[-1]['id']})')
+
+elif command == 'list':
+    if len(args) == 2:
+        list_tasks()
+    elif args[2] == 'done':
+        list_done()
+    elif args[2] == 'todo':
+        list_not_done()
+    elif args[2] == 'in-progress':
+        list_in_progress()
+    else:
+        print(f"Comando '{command} {args[2]}' inválido!")
+
+elif command == "update":
+    update(args[2], args[3])
+    save_tasks(tasks)
+
+elif command == "delete":
+    delete(args[2])
+    save_tasks(tasks)
+
+elif command == "mark-in-progress":
+    mark_in_progress(args[2])
+    save_tasks(tasks)
+
+elif command == "mark-done":
+    mark_done(args[2])
+    save_tasks(tasks)
+
+else:
+    print(f"Comando '{command}' inválido!")
+    exit()
